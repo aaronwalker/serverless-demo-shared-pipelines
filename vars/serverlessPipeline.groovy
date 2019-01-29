@@ -41,20 +41,8 @@ def call(body) {
         steps {
           sh 'npm install'
           sh 'python3 -m pip install --user --upgrade pip'
+          lookupStage defaultStage: 'dev'
           sh 'printenv'
-          script {
-            if(env.BRANCH_NAME ==~ /PR-.*/) {
-              env['stage'] = "${env.CHANGE_BRANCH.replaceAll('feature/', '')}"
-              if(env['stage'] == 'develop') {
-                env['stage'] = 'dev'
-              }
-            } else if(env.BRANCH_NAME ==~ /feature\/.*/) {
-              env['stage'] = "${env.BRANCH_NAME.replaceAll('feature/', '')}"
-            } else  {
-              env['stage'] = 'dev'
-            }
-            env['cfenv'] = 'dev'
-          }
         }
       }
       stage('unit tests') {
